@@ -1,4 +1,4 @@
-export default function createPost(title, description, dueDate, priority) {
+export default function (title, description, dueDate, priority) {
   return {
     title,
     description,

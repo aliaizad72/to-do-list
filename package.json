@@ -14,5 +14,8 @@
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html"
   },
-  "dependencies": {}
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "strftime": "^0.10.3"
+  }
 }
