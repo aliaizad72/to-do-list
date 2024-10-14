@@ -1,11 +1,16 @@
 import todo from "./todo";
+import project from "./project"
+import user from "./user"
 
-const dueDate = document.getElementById("dueDate");
 const submit = document.getElementById("submit");
+const user0 = user();
 
-submit.addEventListener("click", (e) => createTodo(e))
-document.getElementById("opentaskform").addEventListener("click", toggleTodoForm)
-document.getElementById("closeform").addEventListener("click", toggleTodoForm)
+document.getElementById("opentaskform").addEventListener("click", toggleTodoForm);
+document.getElementById("closeform").addEventListener("click", toggleTodoForm);
+document.getElementById("openprojectform").addEventListener("click", toggleProjectForm);
+document.getElementById("closeprojectform").addEventListener("click", toggleProjectForm);
+
+submit.addEventListener("click", (e) => createTodo(e));
 
 function createTodo(event) {
   event.preventDefault();
@@ -90,4 +95,26 @@ function toggleTodoForm() {
   document.getElementById("opentaskform").classList.toggle("hidden");
 }
 
-createTodoDiv(todo("Coding", "Finish JS project", "2024-10-14T18:17", "1"))
+function toggleProjectForm() {
+  document.getElementById("projectform").classList.toggle("hidden");
+  document.getElementById("openprojectform").classList.toggle("hidden");
+}
+
+function setDefaultProject() {
+  user0.add(project("Project0"))
+}
+
+function addProjectsToSelect() {
+  user0.projects.forEach((project) => {
+    const option = document.createElement("option");
+    option.textContent = project.name;
+    option.value = project.name;
+
+    document.getElementById("projects").appendChild(option);
+  })
+}
+
+document.body.onload = () => {
+  setDefaultProject();
+  addProjectsToSelect();
+}
