@@ -1,16 +1,21 @@
-export default function (name) {
-  const todos = [];
-  const isValid = function() {
-    return Boolean(name)
-  }
-  const addTodo = function(todo) {
-    todos.push(todo)
+export default class Project {
+  static id = 0;
+
+  constructor(name) {
+    this.id = Project.id++;
+    this.name = name;
+    this.todos = [];
   }
 
-  return {
-    name,
-    todos,
-    isValid,
-    addTodo
+  isValid() {
+    return Boolean(this.name);
+  }
+
+  addTodo(todo) {
+    this.todos.push(todo)
+  }
+
+  removeTodo(todoId) {
+    this.todos.splice(this.todos.findIndex((todo) => todo.id == todoId), 1);
   }
 }

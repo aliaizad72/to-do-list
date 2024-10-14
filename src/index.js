@@ -1,5 +1,5 @@
-import todo from "./todo";
-import project from "./project"
+import Todo from "./todo";
+import Project from "./project"
 import user from "./user"
 
 const user0 = user();
@@ -15,17 +15,20 @@ document.getElementById("closeprojectform").addEventListener("click", toggleProj
 todosubmit.addEventListener("click", (e) => createTodo(e));
 projectsubmit.addEventListener("click", (e) => createProject(e));
 
-projectOptions.addEventListener("change", (e) => loadProject(e))
+projectOptions.addEventListener("change", () => loadProject())
 
 function createTodo(event) {
   event.preventDefault();
 
-  const newTodo = todo(
+  const newTodo = new Todo(
     document.getElementById("title").value, 
     document.getElementById("description").value, 
     document.getElementById("duedate").value, 
     document.getElementById("priority").value
   )
+
+  const currentProject = getCurrentProject(event);
+  currentProject.addTodo(newTodo);
 
   if(newTodo.isValid()) {;
     createTodoDiv(newTodo);
@@ -78,12 +81,14 @@ function createTodoDiv(todo) {
   deleteBtn.textContent = "Delete";
   completeBtn.classList.add(..."text-sm hover:text-blue-700".split(" "));
   deleteBtn.classList.add(..."text-sm hover:text-blue-700".split(" "));
-  completeBtn.addEventListener("click", (e) => deleteDiv(e));
-  deleteBtn.addEventListener("click", (e) => deleteDiv(e));
+  completeBtn.addEventListener("click", (e) => deleteTodo(e));
+  deleteBtn.addEventListener("click", (e) => deleteTodo(e));
 
   statusDiv.appendChild(completeBtn);
   statusDiv.appendChild(deleteBtn);
   
+  div.classList.add("todo");
+  div.setAttribute("data-todo-id", todo.id)
   div.appendChild(titleDiv);
   div.appendChild(description);
   div.appendChild(dueDate);
@@ -91,7 +96,8 @@ function createTodoDiv(todo) {
   document.getElementById("todos").appendChild(div);
 }
 
-function deleteDiv(e) {
+function deleteTodo(e) {
+  getCurrentProject().removeTodo(e.target.parentElement.parentElement.dataset.todoId);
   e.target.parentElement.parentElement.remove();
 }
 
@@ -106,8 +112,8 @@ function toggleProjectForm() {
 }
 
 function setDefaultProject() {
-  user0.add(project("Project 0"))
-  user0.add(project("Project 1"))
+  user0.add(new Project("Project 0"))
+  user0.add(new Project("Project 1"))
 }
 
 function addProjectsToSelect() {
@@ -143,7 +149,7 @@ function selectProject(project) {
 function createProject(event) {
   event.preventDefault();
 
-  const newProject = project(document.getElementById("project-name").value)
+  const newProject = new Project(document.getElementById("project-name").value)
 
   if (newProject.isValid()) {
     user0.add(newProject);
@@ -156,13 +162,28 @@ function createProject(event) {
 }
 
 function setDefaultTodo(project) {
-  const newTodo = todo("Title", "Description", "Mon Oct 14 2024 18:54:23 GMT+0800 (Malaysia Time)", "1")
+  const newTodo = new Todo("Title", "Description", "Mon Oct 14 2024 18:54:23 GMT+0800 (Malaysia Time)", "1")
 
   project.addTodo(newTodo)
 }
 
 function loadTodos(project) {
   project.todos.forEach((todo) => createTodoDiv(todo))
+}
+
+function getCurrentProject() {
+  return user0.projects.find((project) => project.name == document.getElementById("projects").value)
+}
+
+function loadProject() {
+  removeTodoDivs();
+  const project = getCurrentProject();
+  loadTodos(project);
+}
+
+function removeTodoDivs() {
+  const todos = [...document.querySelectorAll(".todo")];
+  todos.forEach((todo) => todo.remove());
 }
 
 document.body.onload = () => {
