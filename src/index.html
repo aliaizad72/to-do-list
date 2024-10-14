@@ -10,7 +10,7 @@
   <h1 class="text-3xl font-bold p-3">
     To-do-list
   </h1>
-  <div class="p-3">
+  <div class="p-3 hidden" id="form">
     <form action="" class="">
       <div class="mb-5">
         <label for="title" class="block mb-2 text-sm font-medium text-gray-900">Title*</label>
@@ -28,9 +28,15 @@
         <label for="priority" class="block mb-2 text-sm font-medium text-gray-900">Priority</label>
         <input type="number" id="priority" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 outline-none">
       </div>
-      <input id="submit" type="submit" value="Create Task" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+      <div class="flex gap-1 items-center">
+        <input id="submit" type="submit" value="Create Task" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+        <button id="closeform" class="text-blue-700 bg-white hover:text-blue-900 font-medium rounded-lg text-sm px-2 py-2.5 me-2 mb-2">
+          Close 
+        </button>
+      </div>
     </form>
   </div>
+  <button id="opentaskform" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-3 mb-3">New Task</button>
   <div id="todos">
     <h3 class="px-3 text-2xl">Your Tasks</h3>
   </div>

@@ -4,6 +4,8 @@ const dueDate = document.getElementById("dueDate");
 const submit = document.getElementById("submit");
 
 submit.addEventListener("click", (e) => createTodo(e))
+document.getElementById("opentaskform").addEventListener("click", toggleTodoForm)
+document.getElementById("closeform").addEventListener("click", toggleTodoForm)
 
 function createTodo(event) {
   event.preventDefault();
@@ -16,9 +18,9 @@ function createTodo(event) {
   )
 
   if(newTodo.isValid()) {;
-    createTodoDiv(newTodo)
+    createTodoDiv(newTodo);
   } else {
-    alert("Please fill in the title and due date!")
+    alert("Please fill in the title and due date!");
   }
 }
 
@@ -43,8 +45,7 @@ function createTodoDiv(todo) {
   titleDiv.appendChild(title);
   titleDiv.appendChild(priority);
 
-  description.textContent = todo.description
-  description.classList.add()
+  description.textContent = todo.description;
 
   const options = {
     weekday: "long",
@@ -55,8 +56,8 @@ function createTodoDiv(todo) {
     minute: "numeric",
   }
 
-  dueDate.textContent = "Due by: " + new Date(todo.dueDate).toLocaleString('en-GB', options)
-  dueDate.classList.add("text-sm")
+  dueDate.textContent = "Due by: " + new Date(todo.dueDate).toLocaleString('en-GB', options);
+  dueDate.classList.add("text-sm");
 
   const statusDiv = document.createElement("div");
   statusDiv.classList.add(..."flex gap-2 items-center".split(" "));
@@ -82,6 +83,11 @@ function createTodoDiv(todo) {
 
 function deleteDiv(e) {
   e.target.parentElement.parentElement.remove();
+}
+
+function toggleTodoForm() {
+  document.getElementById("form").classList.toggle("hidden");
+  document.getElementById("opentaskform").classList.toggle("hidden");
 }
 
 createTodoDiv(todo("Coding", "Finish JS project", "2024-10-14T18:17", "1"))
