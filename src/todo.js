@@ -14,4 +14,14 @@ export default class Todo {
   isValid() {
     return this.title && this.dueDate
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      dueDate: this.dueDate,
+      priority: this.priority,
+    }
+  }
 }

@@ -191,4 +191,5 @@ document.body.onload = () => {
   setDefaultTodo(user0.projects[0]);
   addProjectsToSelect();
   loadTodos(user0.projects[0])
+  const desObj = Project.deserialize(JSON.stringify(user0.projects[0]));
 }
