@@ -1,14 +1,16 @@
 export default function (name) {
   const todos = [];
-  const completed = [];
   const isValid = function() {
     return Boolean(name)
+  }
+  const addTodo = function(todo) {
+    todos.push(todo)
   }
 
   return {
     name,
     todos,
-    completed,
     isValid,
+    addTodo
   }
 }

@@ -5,6 +5,7 @@ import user from "./user"
 const user0 = user();
 const todosubmit = document.getElementById("todosubmit");
 const projectsubmit = document.getElementById("projectsubmit");
+const projectOptions = document.querySelector("select");
 
 document.getElementById("opentaskform").addEventListener("click", toggleTodoForm);
 document.getElementById("closeform").addEventListener("click", toggleTodoForm);
@@ -13,6 +14,8 @@ document.getElementById("closeprojectform").addEventListener("click", toggleProj
 
 todosubmit.addEventListener("click", (e) => createTodo(e));
 projectsubmit.addEventListener("click", (e) => createProject(e));
+
+projectOptions.addEventListener("change", (e) => loadProject(e))
 
 function createTodo(event) {
   event.preventDefault();
@@ -103,7 +106,8 @@ function toggleProjectForm() {
 }
 
 function setDefaultProject() {
-  user0.add(project("Project0"))
+  user0.add(project("Project 0"))
+  user0.add(project("Project 1"))
 }
 
 function addProjectsToSelect() {
@@ -145,13 +149,25 @@ function createProject(event) {
     user0.add(newProject);
     clearProjectsSelects();
     addProjectsToSelect();
-    selectProject(newProject)
+    selectProject(newProject);
   } else {
     alert("Projects must have a name!");
   }
 }
 
+function setDefaultTodo(project) {
+  const newTodo = todo("Title", "Description", "Mon Oct 14 2024 18:54:23 GMT+0800 (Malaysia Time)", "1")
+
+  project.addTodo(newTodo)
+}
+
+function loadTodos(project) {
+  project.todos.forEach((todo) => createTodoDiv(todo))
+}
+
 document.body.onload = () => {
   setDefaultProject();
+  setDefaultTodo(user0.projects[0]);
   addProjectsToSelect();
+  loadTodos(user0.projects[0])
 }
