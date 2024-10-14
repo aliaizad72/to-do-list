@@ -2,15 +2,17 @@ import todo from "./todo";
 import project from "./project"
 import user from "./user"
 
-const submit = document.getElementById("submit");
 const user0 = user();
+const todosubmit = document.getElementById("todosubmit");
+const projectsubmit = document.getElementById("projectsubmit");
 
 document.getElementById("opentaskform").addEventListener("click", toggleTodoForm);
 document.getElementById("closeform").addEventListener("click", toggleTodoForm);
 document.getElementById("openprojectform").addEventListener("click", toggleProjectForm);
 document.getElementById("closeprojectform").addEventListener("click", toggleProjectForm);
 
-submit.addEventListener("click", (e) => createTodo(e));
+todosubmit.addEventListener("click", (e) => createTodo(e));
+projectsubmit.addEventListener("click", (e) => createProject(e));
 
 function createTodo(event) {
   event.preventDefault();
@@ -105,13 +107,48 @@ function setDefaultProject() {
 }
 
 function addProjectsToSelect() {
+  clearSelectedProject();
   user0.projects.forEach((project) => {
     const option = document.createElement("option");
     option.textContent = project.name;
     option.value = project.name;
+    option.setAttribute("id", project.name)
 
     document.getElementById("projects").appendChild(option);
   })
+}
+
+function clearProjectsSelects() {
+  const projects = document.getElementById("projects");
+
+  while (projects.lastChild) {
+    projects.lastChild.remove()
+  }
+}
+
+function clearSelectedProject() {
+  for(const project of document.getElementById("projects").children) {
+    project.setAttribute("selected", false);
+  }
+}
+
+function selectProject(project) {
+  document.getElementById(project.name).setAttribute("selected", true);
+}
+
+function createProject(event) {
+  event.preventDefault();
+
+  const newProject = project(document.getElementById("project-name").value)
+
+  if (newProject.isValid()) {
+    user0.add(newProject);
+    clearProjectsSelects();
+    addProjectsToSelect();
+    selectProject(newProject)
+  } else {
+    alert("Projects must have a name!");
+  }
 }
 
 document.body.onload = () => {
