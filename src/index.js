@@ -1,16 +1,15 @@
 import Todo from "./todo";
 import Project from "./project"
-import user from "./user"
 
-const user0 = user();
+let projects;
 const todosubmit = document.getElementById("todosubmit");
 const projectsubmit = document.getElementById("projectsubmit");
 const projectOptions = document.querySelector("select");
 
 document.getElementById("opentaskform").addEventListener("click", toggleTodoForm);
 document.getElementById("closeform").addEventListener("click", toggleTodoForm);
-document.getElementById("openprojectform").addEventListener("click", toggleProjectForm);
-document.getElementById("closeprojectform").addEventListener("click", toggleProjectForm);
+document.getElementById("openprojectform").addEventListener("click", (e)=> toggleProjectForm(e));
+document.getElementById("closeprojectform").addEventListener("click", (e)=> toggleProjectForm(e));
 
 todosubmit.addEventListener("click", (e) => createTodo(e));
 projectsubmit.addEventListener("click", (e) => createProject(e));
@@ -28,9 +27,10 @@ function createTodo(event) {
   )
 
   const currentProject = getCurrentProject(event);
-  currentProject.addTodo(newTodo);
 
   if(newTodo.isValid()) {;
+    currentProject.addTodo(newTodo);
+    saveProjects();
     createTodoDiv(newTodo);
   } else {
     alert("Please fill in the title and due date!");
@@ -98,6 +98,7 @@ function createTodoDiv(todo) {
 
 function deleteTodo(e) {
   getCurrentProject().removeTodo(e.target.parentElement.parentElement.dataset.todoId);
+  saveProjects();
   e.target.parentElement.parentElement.remove();
 }
 
@@ -106,19 +107,19 @@ function toggleTodoForm() {
   document.getElementById("opentaskform").classList.toggle("hidden");
 }
 
-function toggleProjectForm() {
+function toggleProjectForm(e) {;
+  e.preventDefault();
   document.getElementById("projectform").classList.toggle("hidden");
   document.getElementById("openprojectform").classList.toggle("hidden");
 }
 
 function setDefaultProject() {
-  user0.add(new Project("Project 0"))
-  user0.add(new Project("Project 1"))
+  projects.push(new Project("Project 0"))
 }
 
 function addProjectsToSelect() {
   clearSelectedProject();
-  user0.projects.forEach((project) => {
+  projects.forEach((project) => {
     const option = document.createElement("option");
     option.textContent = project.name;
     option.value = project.name;
@@ -152,13 +153,16 @@ function createProject(event) {
   const newProject = new Project(document.getElementById("project-name").value)
 
   if (newProject.isValid()) {
-    user0.add(newProject);
+    projects.push(newProject);
+    saveProjects();
     clearProjectsSelects();
     addProjectsToSelect();
     selectProject(newProject);
   } else {
     alert("Projects must have a name!");
   }
+
+  loadProject();
 }
 
 function setDefaultTodo(project) {
@@ -172,7 +176,7 @@ function loadTodos(project) {
 }
 
 function getCurrentProject() {
-  return user0.projects.find((project) => project.name == document.getElementById("projects").value)
+  return projects.find((project) => project.name == document.getElementById("projects").value)
 }
 
 function loadProject() {
@@ -186,10 +190,31 @@ function removeTodoDivs() {
   todos.forEach((todo) => todo.remove());
 }
 
+function serializeProjects() {
+  return JSON.stringify(projects.map((project) => JSON.stringify(project)));
+}
+
+function deserializeProjects(string) {
+  const projects = JSON.parse(string);
+  return projects.map((project) => Project.deserialize(project));
+}
+
+function saveProjects() {
+  localStorage.setItem("projects", serializeProjects());
+}
+
+function setProjects() {
+  projects = localStorage.getItem("projects")
+    ? deserializeProjects(localStorage.getItem("projects"))
+    : [];
+}
+
 document.body.onload = () => {
-  setDefaultProject();
-  setDefaultTodo(user0.projects[0]);
+  setProjects();
+  if (projects.length === 0) {
+    setDefaultProject();
+    setDefaultTodo(projects[0]);
+  }
   addProjectsToSelect();
-  loadTodos(user0.projects[0])
-  const desObj = Project.deserialize(JSON.stringify(user0.projects[0]));
+  loadProject();
 }
